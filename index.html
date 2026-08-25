@@ -1,42 +1,48 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#0d1b36">
-  <meta name="mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="apple-mobile-web-app-title" content="Spanish Golf Tour 2026">
-  <title>Spanish Golf Tour 2026</title>
-
-  <link rel="icon" type="image/png" sizes="512x512" href="spanish-golf-tour-2026-icon-512.png">
-  <link rel="apple-touch-icon" href="spanish-golf-tour-2026-icon-512.png">
-
-  <style>
-    html, body {
-      margin: 0;
-      padding: 0;
-      width: 100%;
-      height: 100%;
-      overflow: hidden;
-      background: #ffffff;
-    }
-    iframe {
-      display: block;
-      width: 100%;
-      height: 100%;
-      border: 0;
-      background: #ffffff;
-    }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#061a2b">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>Spanish Golf Tour 2026</title>
+<!-- SGT26 HUB BUILD: V1.4 850x1699 CROPPED -->
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;width:100%;height:100%;background:#061a2b}
+body{display:grid;place-items:start center;overflow:hidden}
+.hub-shell{
+ position:relative;
+ width:min(100vw,calc(100dvh * 850 / 1699));
+ max-width:850px;
+ aspect-ratio:850/1699;
+ margin:0 auto;
+}
+@supports not (height:100dvh){
+ .hub-shell{width:min(100vw,calc(100vh * 850 / 1699))}
+}
+.hub-art{display:block;width:100%;height:100%;object-fit:contain}
+.hub-link{
+ position:absolute;
+ top:61.7%;
+ height:26.8%;
+ background:transparent;
+ border:0;
+ -webkit-tap-highlight-color:transparent;
+}
+.hub-link:focus-visible{outline:4px solid #fff;outline-offset:-6px}
+.hub-golf{left:2.2%;width:30.2%}
+.hub-expenses{left:33.7%;width:31.8%}
+.hub-photos{left:66.6%;width:31.1%}
+</style>
 </head>
 <body>
-  <iframe
-    src="https://script.google.com/macros/s/AKfycbwLtwAs_5MzWVcWY_IZADPQi9fG2OV1lBiCGKQ0YEnEM_oOwg1Le-QjJIxbrzD24CIwkQ/exec"
-    title="Spanish Golf Tour 2026"
-    allow="clipboard-write"
-    referrerpolicy="strict-origin-when-cross-origin">
-  </iframe>
+<main class="hub-shell" aria-label="Spanish Golf Tour 2026 main menu">
+<img class="hub-art" src="hub-main-menu.png" alt="Spanish Golf Tour 2026 main menu" width="850" height="1699">
+<a class="hub-link hub-golf" href="scorecard.html" aria-label="Open Golf"></a>
+<a class="hub-link hub-expenses" href="expenses.html" aria-label="Open Expenses"></a>
+<span class="hub-link hub-photos" role="button" aria-disabled="true" aria-label="Photos coming later"></span>
+</main>
 </body>
 </html>
