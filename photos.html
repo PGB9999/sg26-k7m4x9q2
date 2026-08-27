@@ -1,0 +1,972 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0d1b36">
+<title>Spanish Golf Tour 2026 — Photos</title>
+
+<style>
+:root{
+  --navy:#0d1b36;
+  --navy2:#071522;
+  --cream:#f4eddf;
+  --teal:#1aa0a4;
+  --orange:#f36b18;
+  --line:rgba(13,27,54,.14);
+  --muted:#6e7681;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--navy2);font-family:Arial,Helvetica,sans-serif;color:var(--navy)}
+body{min-height:100vh}
+button{font:inherit}
+.app{max-width:680px;margin:0 auto;background:var(--cream);min-height:100vh}
+
+.hero{
+  background:linear-gradient(180deg,#112844 0%,#0d1b36 100%);
+  color:white;border-bottom:3px solid var(--orange);padding:14px 16px 12px
+}
+.heroRow{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.hero h1{margin:0;font-size:24px;line-height:1}
+.hero small{display:block;margin-top:5px;color:#c8d2dc;font-weight:800}
+.home{
+  min-width:44px;min-height:44px;border:2px solid var(--teal);border-radius:10px;
+  display:flex;align-items:center;justify-content:center;text-decoration:none;color:white;
+  font-size:20px;font-weight:900
+}
+
+.heroNav{display:flex;align-items:center;gap:7px}
+.identityBar{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;
+  padding:8px 12px;background:#0a1929;color:white;border-bottom:1px solid rgba(255,255,255,.12)
+}
+.identityBar span{font-size:11px;font-weight:900;letter-spacing:.4px}
+.identityBar button{
+  border:1px solid var(--teal);background:transparent;color:#fff;border-radius:999px;
+  padding:6px 10px;font-size:11px;font-weight:900
+}
+
+.actions{
+  display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:12px;
+  background:#fbf7ef;border-bottom:1px solid var(--line)
+}
+.actions button{
+  min-height:50px;border-radius:10px;border:2px solid var(--teal);
+  font-size:14px;font-weight:900
+}
+.actions button:disabled{opacity:.55}
+.primary{background:var(--teal);color:white}
+.secondary{background:transparent;color:var(--navy)}
+
+.uploadStatus{
+  display:none;padding:9px 12px;background:#eef3f3;border-bottom:1px solid var(--line);
+  font-size:12px;font-weight:900
+}
+.uploadStatus.show{display:block}
+.uploadStatus.ok{color:#08715c}
+.uploadStatus.error{color:#bb4319;background:#fff0e8}
+
+.filters{
+  display:flex;gap:8px;overflow-x:auto;padding:10px 12px;background:var(--cream);
+  border-bottom:1px solid var(--line);scrollbar-width:none
+}
+.filters::-webkit-scrollbar{display:none}
+.chip{
+  flex:0 0 auto;border:1px solid #bac3ca;background:#fffaf1;color:var(--navy);
+  border-radius:999px;padding:8px 12px;font-size:12px;font-weight:900
+}
+.chip.active{background:var(--navy);color:white;border-color:var(--navy)}
+
+.gallery{
+  display:grid;grid-template-columns:repeat(3,1fr);gap:5px;padding:5px;background:#e9e2d7
+}
+.galleryEmpty{padding:34px 18px;text-align:center;color:var(--muted);font-size:13px;font-weight:900;background:#fffaf1;border-bottom:1px solid var(--line)}
+.galleryEmpty[hidden]{display:none}
+.tile{
+  position:relative;aspect-ratio:1/1;border:0;padding:0;overflow:hidden;background:#d2d8dc;cursor:pointer
+}
+.tile img{width:100%;height:100%;object-fit:cover;display:block}
+.tile .meta{
+  position:absolute;left:0;right:0;bottom:0;padding:18px 6px 5px;
+  color:white;font-size:10px;font-weight:900;text-align:left;
+  background:linear-gradient(transparent,rgba(0,0,0,.72))
+}
+.tile.placeholder:nth-child(4n+1){background:linear-gradient(135deg,#6a8fad,#d8c29e)}
+.tile.placeholder:nth-child(4n+2){background:linear-gradient(135deg,#407d70,#d6b268)}
+.tile.placeholder:nth-child(4n+3){background:linear-gradient(135deg,#8b6d8f,#d8b9a4)}
+.tile.placeholder:nth-child(4n+4){background:linear-gradient(135deg,#50698c,#9fc7c9)}
+.placeholderIcon{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  font-size:34px;opacity:.85
+}
+
+.noteBox{
+  padding:12px 14px;background:#fffaf1;border-top:1px solid var(--line);
+  color:var(--muted);font-size:12px;font-weight:800;line-height:1.35
+}
+
+.hiddenInput{
+  position:absolute;width:1px;height:1px;opacity:0;pointer-events:none
+}
+
+/* Identity chooser */
+.overlay{
+  position:fixed;inset:0;background:rgba(2,9,16,.84);display:none;align-items:flex-end;
+  justify-content:center;z-index:40
+}
+.overlay.open{display:flex}
+.sheet{
+  width:min(100%,680px);background:var(--cream);border-radius:18px 18px 0 0;
+  padding:16px;padding-bottom:calc(16px + env(safe-area-inset-bottom))
+}
+.sheet h2{margin:0 0 6px;font-size:21px}
+.sheet p{margin:0 0 14px;color:var(--muted);font-size:12px;font-weight:800;line-height:1.35}
+.playerGrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.playerGrid button{
+  min-height:52px;border:2px solid var(--teal);border-radius:10px;background:white;
+  color:var(--navy);font-size:18px;font-weight:900
+}
+
+/* Camera confirmation */
+.cameraSheet{
+  width:min(100%,680px);background:#05090e;color:white;border-radius:18px 18px 0 0;
+  padding:12px;padding-bottom:calc(14px + env(safe-area-inset-bottom))
+}
+.previewFrame{
+  width:100%;max-height:62vh;background:#000;border-radius:12px;overflow:hidden;
+  display:flex;align-items:center;justify-content:center
+}
+.previewFrame img{width:100%;max-height:62vh;object-fit:contain;display:block}
+.cameraCaption{padding:10px 2px 8px;font-size:12px;font-weight:900;color:#cfd7de}
+.cameraBtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.cameraBtns button{
+  min-height:52px;border-radius:10px;font-size:14px;font-weight:900
+}
+.retake{background:transparent;border:2px solid #fff;color:#fff}
+.another{background:var(--teal);border:2px solid var(--teal);color:#fff}
+.okBtn{background:#fff;border:2px solid #fff;color:var(--navy)}
+.cameraBtns button:disabled{opacity:.55}
+
+.lightbox{
+  position:fixed;inset:0;background:#02070c;display:none;z-index:30;
+  align-items:center;justify-content:center;padding:18px
+}
+.lightbox.open{display:flex}
+.lightbox img{max-width:100%;max-height:82vh;object-fit:contain}
+.lightboxNav{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:3;
+  width:48px;height:64px;border:1px solid rgba(255,255,255,.35);
+  border-radius:24px;background:rgba(0,0,0,.38);color:white;
+  font-size:42px;line-height:1;display:flex;align-items:center;justify-content:center;
+  user-select:none;-webkit-user-select:none
+}
+.lightboxPrev{left:10px}
+.lightboxNext{right:10px}
+.lightboxNav[hidden]{display:none}
+.lightboxTrash{
+  position:absolute;top:14px;right:68px;z-index:3;width:46px;height:46px;
+  border:1px solid rgba(255,255,255,.45);border-radius:50%;
+  background:rgba(0,0,0,.55);color:white;font-size:21px;
+  display:flex;align-items:center;justify-content:center
+}
+.lightboxTrash[hidden]{display:none}
+.lightboxClose{
+  position:absolute;top:calc(10px + env(safe-area-inset-top));right:12px;
+  width:46px;height:46px;border-radius:50%;border:2px solid white;background:rgba(0,0,0,.4);
+  color:white;font-size:24px;font-weight:900
+}
+.lightboxCaption{
+  position:absolute;left:14px;right:60px;bottom:calc(12px + env(safe-area-inset-bottom));
+  color:white;font-weight:800;font-size:13px
+}
+
+@media(max-width:360px){
+  .gallery{grid-template-columns:repeat(2,1fr)}
+}
+</style>
+</head>
+
+<body>
+
+<div class="app">
+  <header class="hero">
+    <div class="heroRow">
+      <div>
+        <h1>Tour Photos</h1>
+        <small>Spanish Golf Tour 2026</small>
+      </div>
+      <div class="heroNav">
+        <a id="scorecardBtn" class="home" href="scorecard.html" aria-label="Scorecard">⛳</a>
+        <a id="homeBtn" class="home" href="index.html" aria-label="Main Menu">⌂</a>
+      </div>
+    </div>
+  </header>
+
+  <div class="identityBar">
+    <span id="identityText">PHOTOGRAPHER: —</span>
+    <button id="changePlayerBtn" type="button">CHANGE</button>
+  </div>
+
+  <section class="actions">
+    <button id="takePhotoBtn" class="primary" type="button">📷 TAKE PHOTO</button>
+    <button id="choosePhotosBtn" class="secondary" type="button">🖼️ CHOOSE PHOTOS</button>
+  </section>
+
+  <div id="uploadStatus" class="uploadStatus"></div>
+
+  <nav class="filters" aria-label="Photo filters">
+    <button class="chip active" data-filter="all" type="button">ALL</button>
+    <button class="chip" data-filter="PGB" type="button">PGB</button>
+    <button class="chip" data-filter="DCM" type="button">DCM</button>
+    <button class="chip" data-filter="STU" type="button">STU</button>
+    <button class="chip" data-filter="GEN" type="button">GEN</button>
+  </nav>
+
+  <main id="gallery" class="gallery" aria-live="polite"></main>
+  <div id="galleryEmpty" class="galleryEmpty">Loading tour photos…</div>
+
+  <div class="noteBox">
+    Camera workflow test: after Samsung OK you now get Retake / Another / OK before the photo is finally stored in Drive.
+  </div>
+</div>
+
+<input id="cameraInput" class="hiddenInput" type="file" accept="image/*" capture="environment">
+<input id="galleryInput" class="hiddenInput" type="file" accept="image/*" multiple>
+
+<!-- One-time player identity -->
+<div id="identityOverlay" class="overlay" aria-hidden="true">
+  <section class="sheet">
+    <h2>Who is using this phone?</h2>
+    <p>This is remembered on this phone and used in every photo filename.</p>
+    <div class="playerGrid">
+      <button data-player="PGB" type="button">PGB</button>
+      <button data-player="DCM" type="button">DCM</button>
+      <button data-player="STU" type="button">STU</button>
+      <button data-player="GEN" type="button">GEN</button>
+    </div>
+  </section>
+</div>
+
+<!-- Camera confirmation -->
+<div id="cameraOverlay" class="overlay" aria-hidden="true">
+  <section class="cameraSheet">
+    <div class="previewFrame">
+      <img id="cameraPreview" alt="Captured photo preview">
+    </div>
+    <div id="cameraCaption" class="cameraCaption">Ready to save.</div>
+    <div class="cameraBtns">
+      <button id="retakeBtn" class="retake" type="button">↻ RETAKE</button>
+      <button id="anotherBtn" class="another" type="button">＋ ANOTHER</button>
+      <button id="okBtn" class="okBtn" type="button">✓ OK</button>
+    </div>
+  </section>
+</div>
+
+
+<!-- Navigation guard while photos are still uploading -->
+<div id="savingOverlay" class="overlay" aria-hidden="true">
+  <section class="sheet" style="text-align:center">
+    <h2>Saving Photos</h2>
+    <p id="savingMessage" style="font-size:14px">
+      Please wait while we save your photos to the Tour Drive.<br>
+      This should only take a moment.
+    </p>
+    <div style="font-size:34px;margin:12px 0">⏳</div>
+  </section>
+</div>
+
+<div id="lightbox" class="lightbox" aria-hidden="true">
+  <button id="lightboxTrash" class="lightboxTrash" type="button" aria-label="Move photo to Bin" hidden>🗑️</button>
+  <button id="lightboxClose" class="lightboxClose" type="button">×</button>
+  <button id="lightboxPrev" class="lightboxNav lightboxPrev" type="button" aria-label="Previous photo">‹</button>
+  <img id="lightboxImg" alt="">
+  <button id="lightboxNext" class="lightboxNav lightboxNext" type="button" aria-label="Next photo">›</button>
+  <div id="lightboxCaption" class="lightboxCaption"></div>
+</div>
+
+<script>
+const API_URL =
+  "https://script.google.com/macros/s/AKfycbz06cod2GzirOUT7HCyMLgzF9RLJE8psZQqEQFSzrKut3fYMGVsRicuEutsFabVNelm/exec";
+
+const PLAYER_KEY = 'sgt26Photographer';
+
+const gallery = document.getElementById('gallery');
+const galleryEmpty = document.getElementById('galleryEmpty');
+const cameraInput = document.getElementById('cameraInput');
+const galleryInput = document.getElementById('galleryInput');
+const takePhotoBtn = document.getElementById('takePhotoBtn');
+const choosePhotosBtn = document.getElementById('choosePhotosBtn');
+const statusEl = document.getElementById('uploadStatus');
+const homeBtn = document.getElementById('homeBtn');
+const scorecardBtn = document.getElementById('scorecardBtn');
+const savingOverlay = document.getElementById('savingOverlay');
+const savingMessage = document.getElementById('savingMessage');
+
+const identityOverlay = document.getElementById('identityOverlay');
+const identityText = document.getElementById('identityText');
+
+const cameraOverlay = document.getElementById('cameraOverlay');
+const cameraPreview = document.getElementById('cameraPreview');
+const cameraCaption = document.getElementById('cameraCaption');
+const retakeBtn = document.getElementById('retakeBtn');
+const anotherBtn = document.getElementById('anotherBtn');
+const okBtn = document.getElementById('okBtn');
+
+const lightbox = document.getElementById('lightbox');
+const lightboxImg = document.getElementById('lightboxImg');
+const lightboxCaption = document.getElementById('lightboxCaption');
+const lightboxTrash = document.getElementById('lightboxTrash');
+let openPhotoId = '';
+let openPhotoPhotographer = '';
+const lightboxPrev = document.getElementById('lightboxPrev');
+const lightboxNext = document.getElementById('lightboxNext');
+let lightboxTiles = [];
+let lightboxIndex = -1;
+let lightboxScrollY = 0;
+let lightboxHistoryPushed = false;
+let touchStartX = 0;
+let touchStartY = 0;
+
+let photographer = '';
+let pendingCameraFile = null;
+const pageParams=new URLSearchParams(window.location.search);
+const returnRound=Number(pageParams.get('round')||localStorage.sgt26Round||1);
+const returnHole=Number(pageParams.get('hole')||1);
+if(Number.isInteger(returnRound)&&returnRound>=1&&returnRound<=6) localStorage.sgt26Round=returnRound;
+if(Number.isInteger(returnHole)&&returnHole>=1&&returnHole<=18) localStorage.setItem(`sgt26Hole_r${returnRound}`,returnHole);
+scorecardBtn.href=`scorecard.html?round=${returnRound}&hole=${returnHole}`;
+let pendingPreviewUrl = '';
+
+function setStatus(text,type=''){
+  statusEl.textContent = text;
+  statusEl.className = 'uploadStatus show' + (type ? ' ' + type : '');
+}
+
+function clearStatus(){
+  statusEl.textContent = '';
+  statusEl.className = 'uploadStatus';
+}
+
+function openIdentityChooser(){
+  identityOverlay.classList.add('open');
+  identityOverlay.setAttribute('aria-hidden','false');
+}
+
+function closeIdentityChooser(){
+  identityOverlay.classList.remove('open');
+  identityOverlay.setAttribute('aria-hidden','true');
+}
+
+function setPhotographer(player){
+  photographer = player;
+  localStorage.setItem(PLAYER_KEY, player);
+  identityText.textContent = 'PHOTOGRAPHER: ' + player;
+  closeIdentityChooser();
+}
+
+document.querySelectorAll('[data-player]').forEach(btn=>{
+  btn.addEventListener('click',()=>setPhotographer(btn.dataset.player));
+});
+
+document.getElementById('changePlayerBtn').addEventListener('click',openIdentityChooser);
+
+(function initIdentity(){
+  const saved = String(localStorage.getItem(PLAYER_KEY) || '').toUpperCase();
+  if(['PGB','DCM','STU','GEN'].includes(saved)){
+    setPhotographer(saved);
+  }else{
+    openIdentityChooser();
+  }
+})();
+
+function pad2(n){
+  return String(n).padStart(2,'0');
+}
+
+function extensionFor(file){
+  const type = String(file.type || '').toLowerCase();
+  if(type === 'image/png') return 'png';
+  if(type === 'image/heic') return 'heic';
+  if(type === 'image/heif') return 'heif';
+  if(type === 'image/webp') return 'webp';
+  return 'jpg';
+}
+
+function buildPhotoName(file){
+  const d = new Date();
+  const date =
+    d.getFullYear() +
+    pad2(d.getMonth()+1) +
+    pad2(d.getDate());
+
+  const time =
+    pad2(d.getHours()) +
+    pad2(d.getMinutes()) +
+    pad2(d.getSeconds());
+
+  return `SGT26-${date}-${time}-${photographer || 'UNK'}.${extensionFor(file)}`;
+}
+
+function fileToBase64(file){
+  return new Promise((resolve,reject)=>{
+    const reader = new FileReader();
+
+    reader.onload = ()=>{
+      const result = String(reader.result || '');
+      const comma = result.indexOf(',');
+      resolve(comma >= 0 ? result.slice(comma + 1) : result);
+    };
+
+    reader.onerror = ()=>reject(new Error('Unable to read photo.'));
+    reader.readAsDataURL(file);
+  });
+}
+
+async function uploadPhoto(file){
+  const base64 = await fileToBase64(file);
+  const body = new URLSearchParams();
+
+  body.set('service','photos');
+  body.set('action','upload');
+  body.set('fileName',buildPhotoName(file));
+  body.set('mimeType',file.type || 'image/jpeg');
+  body.set('base64',base64);
+
+  await fetch(API_URL,{
+    method:'POST',
+    mode:'no-cors',
+    body
+  });
+}
+
+function addLocalPreview(file,label){
+  const url = URL.createObjectURL(file);
+  const tile = document.createElement('button');
+
+  tile.type = 'button';
+  tile.className = 'tile';
+  tile.dataset.photographer = photographer || 'UNK';
+  tile.dataset.url = url;
+  tile.dataset.caption = label;
+
+  tile.innerHTML = `<img src="${url}" alt=""><span class="meta">${label}</span>`;
+  gallery.prepend(tile);
+}
+
+function disableCameraActions(disabled){
+  retakeBtn.disabled = disabled;
+  anotherBtn.disabled = disabled;
+  okBtn.disabled = disabled;
+  takePhotoBtn.disabled = disabled;
+  choosePhotosBtn.disabled = disabled;
+}
+
+function clearPendingCamera(){
+  if(pendingPreviewUrl){
+    URL.revokeObjectURL(pendingPreviewUrl);
+  }
+  pendingPreviewUrl = '';
+  pendingCameraFile = null;
+  cameraPreview.removeAttribute('src');
+  cameraInput.value = '';
+}
+
+function closeCameraOverlay(){
+  cameraOverlay.classList.remove('open');
+  cameraOverlay.setAttribute('aria-hidden','true');
+}
+
+function showCameraPreview(file){
+  clearPendingCamera();
+
+  pendingCameraFile = file;
+  pendingPreviewUrl = URL.createObjectURL(file);
+  cameraPreview.src = pendingPreviewUrl;
+  cameraCaption.textContent = 'Ready: ' + buildPhotoName(file);
+
+  cameraOverlay.classList.add('open');
+  cameraOverlay.setAttribute('aria-hidden','false');
+}
+
+function reopenCamera(){
+  closeCameraOverlay();
+  clearPendingCamera();
+  setTimeout(()=>cameraInput.click(),120);
+}
+
+cameraInput.addEventListener('change',()=>{
+  const file = cameraInput.files && cameraInput.files[0];
+  if(file) showCameraPreview(file);
+});
+
+takePhotoBtn.addEventListener('click',()=>{
+  clearStatus();
+  cameraInput.click();
+});
+
+retakeBtn.addEventListener('click',()=>{
+  reopenCamera();
+});
+
+const backgroundUploads = new Set();
+let pendingExitUrl = '';
+
+function updateQueueStatus(){
+  const count = backgroundUploads.size;
+
+  if(count > 0){
+    setStatus(
+      count === 1
+        ? 'Saving 1 photo to Tour Drive…'
+        : `Saving ${count} photos to Tour Drive…`
+    );
+  }
+}
+
+function maybeCompletePendingExit(){
+  if(backgroundUploads.size !== 0 || !pendingExitUrl) return;
+
+  savingMessage.innerHTML = 'All photos saved ✓';
+  const destination = pendingExitUrl;
+  pendingExitUrl = '';
+
+  setTimeout(()=>{
+    window.location.href = destination;
+  },250);
+}
+
+function queueBackgroundUpload(file){
+  const uploadTask = (async()=>{
+    try{
+      await uploadPhoto(file);
+      addLocalPreview(file,'Camera · ' + (photographer || 'UNK'));
+    }catch(error){
+      setStatus(
+        '⚠ A queued photo failed to upload: ' + (error.message || error),
+        'error'
+      );
+      throw error;
+    }
+  })();
+
+  backgroundUploads.add(uploadTask);
+  updateQueueStatus();
+
+  uploadTask.finally(()=>{
+    backgroundUploads.delete(uploadTask);
+
+    if(backgroundUploads.size === 0){
+      if(!statusEl.classList.contains('error')){
+        setStatus('✓ All photos saved to Tour Drive.','ok');
+      }
+      loadDriveGallery();
+      maybeCompletePendingExit();
+    }else{
+      updateQueueStatus();
+    }
+  }).catch(()=>{});
+}
+
+function takePendingFile(){
+  const file = pendingCameraFile;
+
+  if(pendingPreviewUrl){
+    URL.revokeObjectURL(pendingPreviewUrl);
+  }
+
+  pendingPreviewUrl = '';
+  pendingCameraFile = null;
+  cameraPreview.removeAttribute('src');
+  cameraInput.value = '';
+
+  return file;
+}
+
+function queuePendingCameraPhoto(){
+  if(!pendingCameraFile) return false;
+
+  const file = takePendingFile();
+  queueBackgroundUpload(file);
+  return true;
+}
+
+function savePendingCameraInBackgroundAndTakeAnother(){
+  if(!queuePendingCameraPhoto()) return;
+
+  closeCameraOverlay();
+
+  // Camera returns immediately; Drive upload continues in memory.
+  setTimeout(()=>cameraInput.click(),80);
+}
+
+function savePendingCameraInBackgroundAndFinish(){
+  if(!queuePendingCameraPhoto()) return;
+
+  // Return to Photos immediately; Drive upload continues in memory.
+  closeCameraOverlay();
+}
+
+anotherBtn.addEventListener('click',savePendingCameraInBackgroundAndTakeAnother);
+okBtn.addEventListener('click',savePendingCameraInBackgroundAndFinish);
+
+choosePhotosBtn.addEventListener('click',()=>{
+  clearStatus();
+  galleryInput.click();
+});
+
+galleryInput.addEventListener('change',async()=>{
+  const selected = [...galleryInput.files]
+    .filter(file=>String(file.type || '').startsWith('image/'));
+
+  if(!selected.length) return;
+
+  takePhotoBtn.disabled = true;
+  choosePhotosBtn.disabled = true;
+
+  try{
+    for(let i=0;i<selected.length;i++){
+      const file = selected[i];
+
+      setStatus(
+        selected.length === 1
+          ? 'Uploading photo to Drive…'
+          : `Uploading ${i+1} of ${selected.length} photos…`
+      );
+
+      await uploadPhoto(file);
+      addLocalPreview(file,'Gallery · ' + (photographer || 'UNK'));
+    }
+
+    setStatus(
+      selected.length === 1
+        ? '✓ Photo uploaded to Tour Drive.'
+        : `✓ ${selected.length} photos uploaded to Tour Drive.`,
+      'ok'
+    );
+
+  }catch(error){
+    setStatus(
+      'Upload failed: ' + (error.message || error),
+      'error'
+    );
+  }finally{
+    takePhotoBtn.disabled = false;
+    choosePhotosBtn.disabled = false;
+    galleryInput.value = '';
+  }
+});
+
+let activePhotoFilter = 'all';
+
+function applyPhotoFilter(){
+  const tiles=[...gallery.querySelectorAll('.tile')];
+  let visible=0;
+
+  tiles.forEach(tile=>{
+    const show=activePhotoFilter==='all' || tile.dataset.photographer===activePhotoFilter;
+    tile.style.display=show ? 'block' : 'none';
+    if(show) visible++;
+  });
+
+  if(!tiles.length){
+    galleryEmpty.hidden=false;
+    galleryEmpty.textContent='No tour photos yet.';
+  }else if(!visible){
+    galleryEmpty.hidden=false;
+    galleryEmpty.textContent=`No photos from ${activePhotoFilter} yet.`;
+  }else{
+    galleryEmpty.hidden=true;
+  }
+}
+
+document.querySelectorAll('.chip').forEach(btn=>{
+  btn.addEventListener('click',()=>{
+    document.querySelectorAll('.chip').forEach(b=>b.classList.remove('active'));
+    btn.classList.add('active');
+    activePhotoFilter=btn.dataset.filter;
+    applyPhotoFilter();
+  });
+});
+
+function apiJsonpPhotos(params){
+  return new Promise((resolve,reject)=>{
+    const callbackName=`sgt26Photos_${Date.now()}_${Math.floor(Math.random()*100000)}`;
+    const script=document.createElement('script');
+
+    const cleanup=()=>{
+      try{delete window[callbackName];}catch(_){}
+      script.remove();
+    };
+
+    const timer=setTimeout(()=>{
+      cleanup();
+      reject(new Error('Photo gallery request timed out.'));
+    },15000);
+
+    window[callbackName]=payload=>{
+      clearTimeout(timer);
+      cleanup();
+      if(!payload || payload.ok===false){
+        reject(new Error(payload?.error || 'Photo gallery request failed.'));
+        return;
+      }
+      resolve(payload.data);
+    };
+
+    script.onerror=()=>{
+      clearTimeout(timer);
+      cleanup();
+      reject(new Error('Unable to contact photo gallery backend.'));
+    };
+
+    const query=new URLSearchParams({...params,callback:callbackName,v:Date.now()});
+    script.src=`${API_URL}?${query.toString()}`;
+    document.head.appendChild(script);
+  });
+}
+
+function formatPhotoCaption(photo){
+  return photo.displayDate
+    ? `${photo.photographer || 'UNK'} · ${photo.displayDate}`
+    : (photo.photographer || 'UNK');
+}
+
+function renderDriveGallery(photos){
+  gallery.innerHTML='';
+
+  if(!Array.isArray(photos) || !photos.length){
+    galleryEmpty.hidden=false;
+    galleryEmpty.textContent='No tour photos yet.';
+    return;
+  }
+
+  photos.forEach(photo=>{
+    const tile=document.createElement('button');
+    tile.type='button';
+    tile.className='tile';
+    tile.dataset.photographer=photo.photographer || 'UNK';
+    tile.dataset.photoId=photo.id || '';
+    tile.dataset.url=photo.fullUrl;
+    tile.dataset.caption=formatPhotoCaption(photo);
+
+    const img=document.createElement('img');
+    img.src=photo.thumbnailUrl;
+    img.alt=photo.name || 'Tour photo';
+    img.loading='lazy';
+
+    const meta=document.createElement('span');
+    meta.className='meta';
+    meta.textContent=formatPhotoCaption(photo);
+
+    tile.append(img,meta);
+    gallery.appendChild(tile);
+  });
+
+  applyPhotoFilter();
+}
+
+function loadDriveGallery(){
+  galleryEmpty.hidden=false;
+  galleryEmpty.textContent='Loading tour photos…';
+
+  apiJsonpPhotos({service:'photos',action:'list'})
+    .then(renderDriveGallery)
+    .catch(error=>{
+      console.error('Photo gallery load failed:',error);
+      galleryEmpty.hidden=false;
+      galleryEmpty.textContent='Unable to load tour photos.';
+    });
+}
+
+function currentVisibleTiles(){
+  return Array.from(gallery.querySelectorAll('.tile'))
+    .filter(tile => tile.style.display !== 'none' && tile.dataset.url);
+}
+
+function showLightboxIndex(index){
+  if(!lightboxTiles.length) return;
+
+  lightboxIndex =
+    (index + lightboxTiles.length) % lightboxTiles.length;
+
+  const tile = lightboxTiles[lightboxIndex];
+
+  lightboxImg.src = tile.dataset.url;
+  lightboxCaption.textContent = tile.dataset.caption || '';
+  openPhotoId = tile.dataset.photoId || '';
+  openPhotoPhotographer = tile.dataset.photographer || '';
+
+  lightboxTrash.hidden =
+    !openPhotoId ||
+    !photographer ||
+    openPhotoPhotographer !== photographer;
+
+  const many = lightboxTiles.length > 1;
+  lightboxPrev.hidden = !many;
+  lightboxNext.hidden = !many;
+}
+
+function openLightbox(tile){
+  lightboxTiles = currentVisibleTiles();
+  lightboxIndex = lightboxTiles.indexOf(tile);
+  if(lightboxIndex < 0) return;
+
+  lightboxScrollY = window.scrollY;
+  showLightboxIndex(lightboxIndex);
+
+  lightbox.classList.add('open');
+  lightbox.setAttribute('aria-hidden','false');
+
+  // Give the full-screen viewer its own browser-history step.
+  // Android Back then closes the viewer instead of leaving Photos.
+  if(!lightboxHistoryPushed){
+    history.pushState({sgt26PhotoViewer:true},'',location.href);
+    lightboxHistoryPushed = true;
+  }
+}
+
+gallery.addEventListener('click',event=>{
+  const tile = event.target.closest('.tile');
+  if(!tile || !tile.dataset.url) return;
+  openLightbox(tile);
+});
+
+function closeLightbox(fromPopState=false){
+  if(!lightbox.classList.contains('open')) return;
+
+  lightbox.classList.remove('open');
+  lightbox.setAttribute('aria-hidden','true');
+  lightboxImg.removeAttribute('src');
+  openPhotoId = '';
+  openPhotoPhotographer = '';
+  lightboxTrash.hidden = true;
+  lightboxPrev.hidden = true;
+  lightboxNext.hidden = true;
+
+  requestAnimationFrame(()=>{
+    window.scrollTo(0,lightboxScrollY);
+  });
+
+  if(lightboxHistoryPushed){
+    lightboxHistoryPushed = false;
+    if(!fromPopState){
+      history.back();
+    }
+  }
+}
+
+
+function requestExit(url){
+  if(backgroundUploads.size === 0){
+    window.location.href = url;
+    return;
+  }
+
+  pendingExitUrl = url;
+  savingMessage.innerHTML =
+    'Please wait while we save your photos to the Tour Drive.<br>' +
+    'This should only take a moment.';
+
+  savingOverlay.classList.add('open');
+  savingOverlay.setAttribute('aria-hidden','false');
+}
+
+homeBtn.addEventListener('click',event=>{
+  event.preventDefault();
+  requestExit(homeBtn.href);
+});
+scorecardBtn.addEventListener('click',event=>{
+  event.preventDefault();
+  requestExit(scorecardBtn.href);
+});
+
+// Warn if the browser/tab itself is closed or refreshed while uploads remain.
+// Mobile browsers decide the exact wording of this system warning.
+window.addEventListener('beforeunload',event=>{
+  if(backgroundUploads.size > 0){
+    event.preventDefault();
+    event.returnValue = '';
+  }
+});
+
+loadDriveGallery();
+
+async function binOpenPhoto(){
+  if(!openPhotoId || !photographer || openPhotoPhotographer !== photographer) return;
+
+  const confirmed=window.confirm(
+    'Move this photo to Bin?\n\nIt will disappear from the Tour Gallery but can still be recovered from Google Drive Bin.'
+  );
+  if(!confirmed) return;
+
+  lightboxTrash.disabled=true;
+  try{
+    await apiJsonpPhotos({service:'photos',action:'trash',id:openPhotoId,photographer:photographer});
+    closeLightbox(false);
+    setStatus('✓ Photo moved to Drive Bin.','ok');
+    loadDriveGallery();
+  }catch(error){
+    setStatus('Unable to bin photo: '+(error.message||error),'error');
+  }finally{
+    lightboxTrash.disabled=false;
+  }
+}
+lightboxTrash.addEventListener('click',binOpenPhoto);
+
+
+function previousLightboxPhoto(){
+  showLightboxIndex(lightboxIndex - 1);
+}
+
+function nextLightboxPhoto(){
+  showLightboxIndex(lightboxIndex + 1);
+}
+
+lightboxPrev.addEventListener('click',event=>{
+  event.stopPropagation();
+  previousLightboxPhoto();
+});
+
+lightboxNext.addEventListener('click',event=>{
+  event.stopPropagation();
+  nextLightboxPhoto();
+});
+
+lightbox.addEventListener('touchstart',event=>{
+  if(event.touches.length !== 1) return;
+  touchStartX = event.touches[0].clientX;
+  touchStartY = event.touches[0].clientY;
+},{passive:true});
+
+lightbox.addEventListener('touchend',event=>{
+  if(!touchStartX || !event.changedTouches.length) return;
+
+  const dx = event.changedTouches[0].clientX - touchStartX;
+  const dy = event.changedTouches[0].clientY - touchStartY;
+
+  touchStartX = 0;
+  touchStartY = 0;
+
+  // Horizontal deliberate swipe; ignore mostly vertical gestures.
+  if(Math.abs(dx) < 55 || Math.abs(dx) <= Math.abs(dy)) return;
+
+  if(dx < 0) nextLightboxPhoto();
+  else previousLightboxPhoto();
+},{passive:true});
+
+window.addEventListener('popstate',()=>{
+  if(lightbox.classList.contains('open')){
+    lightboxHistoryPushed = false;
+    closeLightbox(true);
+  }
+});
+
+document.getElementById('lightboxClose').addEventListener('click',()=>closeLightbox(false));
+
+lightbox.addEventListener('click',event=>{
+  if(event.target === lightbox) closeLightbox();
+});
+</script>
+
+</body>
+</html>
