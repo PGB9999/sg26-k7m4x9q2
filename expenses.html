@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SGT26_BUILD:RyderCup2018.6 -->
+<!-- SGT26_BUILD:RyderCup2018.7 -->
 <html>
 <head>
   <meta charset="utf-8">
@@ -196,7 +196,7 @@ html,body{background:linear-gradient(180deg,#071728 0,#0b2036 18%,#f6f0e2 18%) !
 <script>
 
   const EXPENSES_API_URL = "https://script.google.com/macros/s/AKfycbz06cod2GzirOUT7HCyMLgzF9RLJE8psZQqEQFSzrKut3fYMGVsRicuEutsFabVNelm/exec";
-  const EXPENSES_APP_VERSION = "RyderCup2018.6";
+  const EXPENSES_APP_VERSION = "RyderCup2018.7";
 
   function apiCall(action, params={}) {
     return new Promise((resolve, reject) => {
@@ -278,7 +278,41 @@ html,body{background:linear-gradient(180deg,#071728 0,#0b2036 18%,#f6f0e2 18%) !
   function showError(msg){ $('error').textContent=msg; $('error').classList.add('show'); }
   function clearMessages(){ $('error').classList.remove('show'); $('status').classList.remove('show'); }
 
-  $('saveBtn').onclick=()=>{
+  
+const PENDING_EXPENSE_KEY='sgt26PendingExpenseSubmission';
+
+function expenseFingerprint(payload){
+  return [
+    String(payload.expenseDate||'').trim(),
+    String(payload.expense||'').trim(),
+    Number(payload.amount).toFixed(2),
+    String(payload.paidBy||'').trim().toUpperCase(),
+    String(payload.notes||'').trim()
+  ].join('|');
+}
+function newExpenseTransactionId(){
+  if(window.crypto && typeof window.crypto.randomUUID==='function') return window.crypto.randomUUID();
+  return `SGT26-${Date.now()}-${Math.random().toString(36).slice(2,12)}`;
+}
+function transactionIdForExpense(payload){
+  const fingerprint=expenseFingerprint(payload);
+  try{
+    const existing=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
+    if(existing && existing.fingerprint===fingerprint && existing.transactionId) return existing.transactionId;
+  }catch(_){}
+  const transactionId=newExpenseTransactionId();
+  try{localStorage.setItem(PENDING_EXPENSE_KEY,JSON.stringify({fingerprint,transactionId}));}catch(_){}
+  return transactionId;
+}
+function clearExpenseTransactionId(payload){
+  const fingerprint=expenseFingerprint(payload);
+  try{
+    const existing=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
+    if(existing && existing.fingerprint===fingerprint) localStorage.removeItem(PENDING_EXPENSE_KEY);
+  }catch(_){}
+}
+
+$('saveBtn').onclick=()=>{
     clearMessages();
     const expense=$('expense').value.trim();
     const amount=Number($('amount').value.replace(',','.'));
@@ -286,12 +320,14 @@ html,body{background:linear-gradient(180deg,#071728 0,#0b2036 18%,#f6f0e2 18%) !
     if(!Number.isFinite(amount)||amount<=0) return showError('Please enter a valid amount.');
     if(!selectedPayer) return showError('Please choose who paid.');
     const payload={expenseDate:selectedDate,expense,amount,paidBy:selectedPayer,notes:$('notes').value.trim()};
+    payload.transactionId=transactionIdForExpense(payload);
     const btn=$('saveBtn'); btn.disabled=true; btn.textContent='SAVING…';
     apiCall('save', payload)
       .then(r=>{
         btn.disabled=false; btn.innerHTML='✓ &nbsp; SAVE EXPENSE';
         $('statusText').textContent=`€${Number(r.amount).toFixed(2)} – ${r.expense} • ${r.expenseDate}`;
         $('status').classList.add('show');
+        clearExpenseTransactionId(payload);
         $('expense').value=''; $('amount').value=''; $('notes').value=''; setDate('today');
         window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
       })
