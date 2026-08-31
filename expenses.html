@@ -278,41 +278,63 @@ html,body{background:linear-gradient(180deg,#071728 0,#0b2036 18%,#f6f0e2 18%) !
   function showError(msg){ $('error').textContent=msg; $('error').classList.add('show'); }
   function clearMessages(){ $('error').classList.remove('show'); $('status').classList.remove('show'); }
 
-  
-const PENDING_EXPENSE_KEY='sgt26PendingExpenseSubmission';
+  const PENDING_EXPENSE_KEY='sgt26PendingExpenseSubmission';
 
-function expenseFingerprint(payload){
-  return [
-    String(payload.expenseDate||'').trim(),
-    String(payload.expense||'').trim(),
-    Number(payload.amount).toFixed(2),
-    String(payload.paidBy||'').trim().toUpperCase(),
-    String(payload.notes||'').trim()
-  ].join('|');
-}
-function newExpenseTransactionId(){
-  if(window.crypto && typeof window.crypto.randomUUID==='function') return window.crypto.randomUUID();
-  return `SGT26-${Date.now()}-${Math.random().toString(36).slice(2,12)}`;
-}
-function transactionIdForExpense(payload){
-  const fingerprint=expenseFingerprint(payload);
-  try{
-    const existing=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
-    if(existing && existing.fingerprint===fingerprint && existing.transactionId) return existing.transactionId;
-  }catch(_){}
-  const transactionId=newExpenseTransactionId();
-  try{localStorage.setItem(PENDING_EXPENSE_KEY,JSON.stringify({fingerprint,transactionId}));}catch(_){}
-  return transactionId;
-}
-function clearExpenseTransactionId(payload){
-  const fingerprint=expenseFingerprint(payload);
-  try{
-    const existing=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
-    if(existing && existing.fingerprint===fingerprint) localStorage.removeItem(PENDING_EXPENSE_KEY);
-  }catch(_){}
-}
+  function expenseFingerprint(payload){
+    return [
+      String(payload.expenseDate||'').trim(),
+      String(payload.expense||'').trim(),
+      Number(payload.amount).toFixed(2),
+      String(payload.paidBy||'').trim().toUpperCase(),
+      String(payload.notes||'').trim()
+    ].join('|');
+  }
 
-$('saveBtn').onclick=()=>{
+  function newExpenseTransactionId(){
+    if(window.crypto && typeof window.crypto.randomUUID==='function'){
+      return window.crypto.randomUUID();
+    }
+    return `SGT26-${Date.now()}-${Math.random().toString(36).slice(2,12)}`;
+  }
+
+  function transactionIdForExpense(payload){
+    const fingerprint=expenseFingerprint(payload);
+
+    try{
+      const pending=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
+      if(pending && pending.fingerprint===fingerprint && pending.transactionId){
+        return pending.transactionId;
+      }
+    }catch(_){}
+
+    const transactionId=newExpenseTransactionId();
+
+    try{
+      localStorage.setItem(
+        PENDING_EXPENSE_KEY,
+        JSON.stringify({fingerprint,transactionId})
+      );
+    }catch(_){}
+
+    return transactionId;
+  }
+
+  function clearExpenseTransactionId(payload){
+    const fingerprint=expenseFingerprint(payload);
+
+    try{
+      const pending=JSON.parse(localStorage.getItem(PENDING_EXPENSE_KEY)||'null');
+      if(
+        pending &&
+        pending.fingerprint===fingerprint &&
+        pending.transactionId===payload.transactionId
+      ){
+        localStorage.removeItem(PENDING_EXPENSE_KEY);
+      }
+    }catch(_){}
+  }
+
+  $('saveBtn').onclick=()=>{
     clearMessages();
     const expense=$('expense').value.trim();
     const amount=Number($('amount').value.replace(',','.'));
