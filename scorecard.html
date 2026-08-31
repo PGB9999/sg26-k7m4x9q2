@@ -1,5 +1,5 @@
 <!doctype html>
-<!-- SGT26_BUILD:OpenBoardScorecard1.6 -->
+<!-- SGT26_BUILD:OpenBoardScorecard1.6.1 -->
 <html lang="en">
 <head>
 <meta charset="utf-8">
@@ -1227,13 +1227,13 @@ body.fourBallCompact .nav .next{
 
 </style>
 <script>
-  const APP_VERSION = "OpenBoardScorecard1.6";
+  const APP_VERSION = "OpenBoardScorecard1.6.1";
   console.info("SGT26 Scorecard Open Board V1.4.1", APP_VERSION);
 </script>
 </head>
 <body class="fourBallCompact">
 <div class="app">
-  <img class="banner" src="sgt26-banner.png?v=OpenBoardScorecard1.6" alt="Spanish Golf Tour 2026">
+  <img class="banner" src="sgt26-banner.png?v=OpenBoardScorecard1.6.1" alt="Spanish Golf Tour 2026">
   <div class="roundbar roundbarSimple">
     <div class="roundCourse">
       <span id="roundLabel">ROUND 1</span>
@@ -1406,6 +1406,7 @@ function updatePairingsUI(){
   if(!pairingsActive){
     bar.hidden=true;
     selectedPairingGroup=null;
+    localStorage.removeItem(pairingStorageKey());
     return;
   }
 
@@ -1567,10 +1568,14 @@ function queueScoreSync(roundNumber,pid,holeNumber,gross){
   queue[key]={round:Number(roundNumber),player:String(pid),hole:Number(holeNumber),gross:Number(gross)};
   savePendingSync(queue);
 }
-function removeQueuedScore(item){
+function removeQueuedScoreIfUnchanged(item){
   const queue=getPendingSync();
-  delete queue[pendingItemKey(item.round,item.player,item.hole)];
-  savePendingSync(queue);
+  const key=pendingItemKey(item.round,item.player,item.hole);
+  const current=queue[key];
+  if(current && Number(current.gross)===Number(item.gross)){
+    delete queue[key];
+    savePendingSync(queue);
+  }
 }
 function pendingSyncCount(){
   return Object.keys(getPendingSync()).length;
@@ -1595,7 +1600,9 @@ async function flushPendingScores(){
         player:item.player,
         gross:item.gross
       });
-      removeQueuedScore(item);
+      /* A newer tap may have replaced this queued score while this request
+         was in flight. Never delete that newer value. */
+      removeQueuedScoreIfUnchanged(item);
     }
   }catch(error){
     console.error('Pending score sync paused:',error);
@@ -1730,6 +1737,20 @@ function applyCentralScores(savedScores){
 
     scores[pid]??={};
     scores[pid][h]=gross;
+  });
+
+  /* Central data is authoritative only for scores that are not still waiting
+     to sync from this phone. Re-apply pending local edits after the central
+     read so a reconnect cannot visually revert a newer local score. */
+  Object.values(getPendingSync()).forEach(item=>{
+    if(Number(item.round)!==currentRound) return;
+    const pid=String(item.player||'').toUpperCase();
+    const h=Number(item.hole);
+    const gross=Number(item.gross);
+    if(!pid || !h) return;
+    scores[pid]??={};
+    if(gross>0) scores[pid][h]=gross;
+    else delete scores[pid][h];
   });
 
   save();
@@ -1892,7 +1913,7 @@ loadRoundData()
 
 <script>
 if('serviceWorker' in navigator){
-  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw-scorecard.js?v=OpenBoardScorecard1.6')
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw-scorecard.js?v=OpenBoardScorecard1.6.1')
     .catch(e=>console.error('Service worker registration failed:',e)));
 }
 </script>
